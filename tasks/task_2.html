@@ -16,7 +16,7 @@
 
         <template v-if="isMonthValid">
             <p>Рекомендований одяг: <strong>{{ clothes }}</strong></p>
-            <img :src="seasonObj.photoURL" alt="Forest photo">
+            <img :src="photoURL" alt="Forest photo">
         </template>
         <p v-else-if="isMonthEmpty" class="info">Введіть номер місяця</p>
         <p v-else class="error">Введіть валідний номер місяця</p>
@@ -65,6 +65,9 @@
                 },
                 clothes() {
                     return this.seasonObj.clothes;
+                },
+                photoURL() {
+                    return this.seasonObj.photoURL;
                 },
             },
         }).mount('#app');
