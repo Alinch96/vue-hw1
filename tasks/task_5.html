@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        body {
+            padding: 48px;
+            font-size: 24px;
+        }
+        form {
+            border: 2px solid black;
+            padding: 48px;
+            width: 420px;
+        }
+
+        input {
+            width: 320px;
+            height: 24px;
+            border: 1px solid black;
+        }
+
+        label {
+            display: inline-block;
+            padding-bottom: 24px;
+        }
+        button {
+            width: 160px;
+            height: 48px;
+            margin-top: 48px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+    <!-- Задача 3. Задано початок та кінець діапазону. При натисканні на кнопку випадковим чином генерувати значення з вказаного
+діапазону та відображати його. -->
+
+    <div id="app">
+        <form @submit="onSubmit">
+            <label>
+                Login:
+                <input type="text" v-model="login">
+            </label>
+            <br>
+            <label>
+                Password:
+                <input type="password" v-model="password">
+            </label>
+            <br>
+            <button type="submit" :disabled="!login||!password">Go!</button>
+        </form>
+        
+        <p>
+            {{message}}
+        </p>
+    </div>
+
+
+    <script>
+        const { createApp } = Vue
+
+        const USERS= [
+            {login: 'alina', password: '12345'},
+            {login: 'maria', password: '123456'},
+            {login: 'taras', password: '1234'}
+        ];
+
+        createApp({
+            data() {
+                return {
+                    login: null,
+                    password: null,
+                    message: null,
+                };
+            },
+            methods: {
+                onSubmit(e){
+                    e.preventDefault();
+                    const user = USERS.find(user=> user.login===this.login);
+                    if(!user) {
+                        this.message = `Користувач з логіном ${this.login} не знайдено`;
+                    }
+                    else if(user.password!==this.password) {
+                        this.message = 'Hевірний пароль';
+                    }
+                    else this.message="Авторизація успішна!"
+                    this.password=null;
+                    this.login=null;
+                }
+                
+            },
+            computed: {
+                isStartEndValid() {
+                    return (this.start && this.end) || (this.start === 0 || this.end === 0);
+                }
+            }
+
+        }).mount('#app')
+    </script>
+
+
+</body>
+
+</html>

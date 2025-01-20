@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+      body {
+        padding: 48px;
+        font-size: 24px;
+      }
+    </style>
+    
+</head>
+<body>
+    <!-- Задача 1. Вводиться кількість пасажирів. Вивести:
+    скільки потрібно автобусів (кожен автобус на 20 місць)
+    скільки пляшок води (кожному пасажиру 2 пляшки)
+    скільки бутербродів (кожному пасажиру 3 бутерброди) -->
+    
+    <div id="app">
+        
+        <input type="number" min="1" placeholder="Кількість пасажирів"  v-model.number="passengersNumber">
+        <template v-if="passengersNumber>0">
+            <p>Кількість автобусів: {{busesNumber}}</p>
+            <p>Загальна кількість пляшок води: {{bottlesNumber}}</p>
+            <p>Загальна кількість бутербродів: {{sandwichesNumber}}</p>
+        </template>
+        <p v-else-if="passengersNumber<0"> Введіть додатню кількість пасажирів</p>
+        <p v-else> Введіть кількість пасажирів</p>
+
+    
+    
+    <script>
+        const { createApp } = Vue
+        
+        const constants= {
+            busCapacity: 20,
+            bottlesPerPerson: 2,
+            sandwichesPerPerson: 3,
+        };
+
+        createApp({
+            data() {
+                return {
+                    passengersNumber: null
+                };
+            },
+            computed: {
+                busesNumber() {
+                    return Math.ceil(this.passengersNumber /constants.busCapacity);
+                },
+                bottlesNumber() {
+                    return this.passengersNumber * constants.bottlesPerPerson;
+                },
+                sandwichesNumber() {
+                    return this.passengersNumber * constants.sandwichesPerPerson;
+                }
+            }
+        }).mount('#app')
+    </script>
+</div>
+
+</body>
+</html>

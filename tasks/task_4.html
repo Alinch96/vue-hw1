@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+         
+         body {
+           padding: 48px;
+           font-size: 24px;
+        }
+        
+        input {
+           width: 74px;
+        }
+        .input-wrapper{
+            padding-bottom: 24px;
+        }
+        .green {
+            color: rgb(21, 155, 21);
+        }
+        .red {
+            color: red;
+        }
+    </style>
+   
+</head>
+<body>
+
+<body>
+
+<!-- Задача 4. “Рахунок у банку”
+Вимоги:
+1) Спочатку сума дорівнює 0грн. Змінити суму у гривнях можна або зарахуванням на рахунок, або зняттям.
+2) Сума автоматично переводиться у долари та євро (фіксований курс задається у data).
+3) можливість зарахувати суму (контролювати, щоб не була від’ємною)
+4) можливість зняти (щоб не можна зняти більше ніж є на рахунку)
+5) при виконанні зняття і зарахування коштів вираховувати 3% від суми (відображати кількість відсотків автоматично)
+
+При зміні суми :
+- якщо було зняття, то суму відоражати червоним
+- якщо було зарахування, то суму відображати зеленим
+Якщо сума валюти менша за 100 то відображати червоним кольором, інакше - зеленим -->
+
+
+    <div id="app">
+        <p :class="balanceColor">Сума на рахунку: {{balance}} грн.</p>
+        <div class="input-wrapper">
+            <label> Зарахувати на рахунок:<input type="number" min="0" v-model.number="add"  @blur="onAddBlur" @focus="onAddFocus"></label>
+            <button type="button" :disabled='isAddBtnDisabled' @click="onAddClick">Зарахувати</button>
+        </div>
+        <div class="input-wrapper">
+            <label> Зняти з рахунку:<input type="number" :min="0" v-model.number="subtract" @blur="onSubtractBlur" @focus="onSubtractFocus"></label>
+            <button type="button" :disabled='isSubtractBtnDisabled'  @click="onSubtractClick">Зняти</button>
+        </div>
+       <p v-if="percentsForAdd||percentsForSubtract">Відсотки за обслуговування: {{percentsForAdd||percentsForSubtract}}</p>
+       <p v-else-if="add<0||subtract<0">Введіть додатню суму грошей</p>
+       <p v-else-if="!isEnoughMoney&&subtract">Недостатньо грошей на рахунку</p>
+       <hr>
+       <p :class="balanceInDollars<100 ?'red' : 'green'">Сума в доларах: {{balanceInDollars}}</p>
+       <p :class="balanceInDollars<100 ?'red' : 'green'">Cума в євро: {{balanceInEuros}}</p>
+       
+
+        
+    </div>
+
+    <script>
+        const { createApp } = Vue
+
+        const EXCHANGE_RATE ={
+            DOLLAR: 42.09,
+            EURO: 43.24,
+        }
+
+        createApp({
+            data() {
+                return {
+                    balance: 0,
+                    add: null,
+                    subtract: null,
+                    balanceColor: null,
+                };
+            },
+            methods: {
+                roundToTwo(num) {
+                    return Math.round(num * 100) / 100;
+                },
+                onAddClick() {
+                  this.balance= this.roundToTwo(this.balance + this.add - this.percentsForAdd);
+                  this.balanceColor ='green';
+                  this.add = null;
+                  
+                },
+                onSubtractClick() {
+                  this.balance= this.balance - this.subtract - this.percentsForSubtract;
+                  this.balanceColor = 'red';
+                  this.subtract = null;
+                },
+                onAddBlur() {
+                    if(this.isAddBtnDisabled) this.add = null;
+                },
+                onSubtractBlur() {
+                    if(this.isSubtractBtnDisabled) this.subtract = null;
+                },
+                onAddFocus() {
+                    this.subtract = null;
+                },
+                onSubtractFocus() {
+                    this.add= null;
+                }
+
+            },
+            computed: {
+                isEnoughMoney(){
+                    return this.subtract < (this.balance + this.percentsForSubtract)
+                },
+                isSubtractBtnDisabled() {
+                    return this.subtract <= 0 || !this.isEnoughMoney
+
+                },
+                isAddBtnDisabled() {
+                    return this.add <= 0
+                     
+                }, 
+                percentsForAdd() {
+                   if(this.isAddBtnDisabled) return null;
+                   return this.add&& this.roundToTwo(this.add*0.03);
+                },
+                percentsForSubtract() {
+                   if (this.isSubtractBtnDisabled) return null;
+                   return this.subtract&& this.roundToTwo(this.subtract * 0.03);
+                },
+                balanceInDollars() {
+                    return this.roundToTwo(this.balance/EXCHANGE_RATE.DOLLAR);
+                },
+                balanceInEuros() {
+                    return this.roundToTwo(this.balance/EXCHANGE_RATE.EURO);
+                },
+                
+            },
+
+        }).mount('#app')
+
+    </script>
+</body>
+
+</html>
