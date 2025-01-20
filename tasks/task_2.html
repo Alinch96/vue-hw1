@@ -4,36 +4,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Seasonal Clothing</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <style>
-        body {
-            padding: 48px;
-            font-size: 24px;
-        }
-    
-    </style>
-
+    <link rel="stylesheet" href="../styles/task_2.css">
 </head>
 
 <body>
-<!-- Задача 2. Вводиться номер місяця. Автоматично виводити рекомендований одяг (зима – пальто, літо – шорти ….). Також
-автоматично виводити зображення з відповідним зображенням лісу (зима – ліс зі снігом, осінь – жовтий ліс, …). -->
-
     <div id="app">
-
+        <h2>Рекомендації за сезоном</h2>
         <input type="number" min="1" max="12" placeholder="Номер місяця" v-model.number="month">
+
         <template v-if="isMonthValid">
-            <p>Peкомендований одяг: {{clothes}}</p>
-            <img :src="seasonObj.photoURL" alt="Forest photo" width="500">
+            <p>Рекомендований одяг: <strong>{{ clothes }}</strong></p>
+            <img :src="seasonObj.photoURL" alt="Forest photo">
         </template>
-        <p v-else-if="isMonthEmpty"> Введіть номер місяця</p>
-        <p v-else> Введіть валідний номер місяця</p>
+        <p v-else-if="isMonthEmpty" class="info">Введіть номер місяця</p>
+        <p v-else class="error">Введіть валідний номер місяця</p>
     </div>
-    
+
     <script>
-        const { createApp } = Vue
-        
+        const { createApp } = Vue;
+
         const SEASONS = {
             WINTER: {
                 clothes: 'пуховик',
@@ -47,44 +38,37 @@
                 clothes: 'шорти',
                 photoURL: 'https://wallpapercave.com/wp/wp4573746.jpg',
             },
-                AUTUMN: {
+            AUTUMN: {
                 clothes: 'плащ',
                 photoURL: 'https://th.bing.com/th/id/OIP.eTEzX6uUlxhNU6LcrR9GXQHaHa?w=475&h=475&rs=1&pid=ImgDetMain',
             },
-        }
+        };
 
         createApp({
             data() {
                 return {
-                    month: null
+                    month: null,
                 };
             },
             computed: {
                 isMonthEmpty() {
-                    return this.month===null||this.month==='';
+                    return this.month === null || this.month === '';
                 },
                 isMonthValid() {
-                    return this.month >0 && this.month < 13; 
+                    return this.month > 0 && this.month < 13;
                 },
                 seasonObj() {
-                        if (this.month === 12 || this.month <3) return SEASONS.WINTER;
-                        if (this.month < 6) return SEASONS.SPRING;
-                        if (this.month < 9) return SEASONS.SUMMER;
-                        return SEASONS.AUTUMN;
+                    if (this.month === 12 || this.month < 3) return SEASONS.WINTER;
+                    if (this.month < 6) return SEASONS.SPRING;
+                    if (this.month < 9) return SEASONS.SUMMER;
+                    return SEASONS.AUTUMN;
                 },
                 clothes() {
-                    const {clothes} = this.seasonObj;
-                    return clothes;
+                    return this.seasonObj.clothes;
                 },
-                photoURL() {
-                    const { photoURL } = this.seasonObj;
-                    return photoURL;
-                }
-            }
-        }).mount('#app')
+            },
+        }).mount('#app');
     </script>
-    
-
 </body>
 
 </html>
